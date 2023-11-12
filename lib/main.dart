@@ -47,7 +47,10 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
-                  decoration: const BoxDecoration(color: Colors.green),
+                  decoration: BoxDecoration(
+                    color: Colors.green,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
                   height: 100,
                   child: const Center(
                     child: Padding(
