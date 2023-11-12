@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'tododescrip.dart';
 
 void main() {
   runApp(const MyApp());
@@ -39,47 +40,17 @@ class _MyHomePageState extends State<MyHomePage> {
           style: const TextStyle(fontSize: 25, color: Colors.white),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.green,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  height: 100,
-                  child: const Center(
-                    child: Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Todo1",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 24),
-                              textAlign: TextAlign.left,
-                            ),
-                            Text(
-                              "Description: Your description goes here. ",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 16),
-                            ),
-                          ],
-                        )),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+      body: const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              tododescrip("name",  "Description Here"),
+              SizedBox(height: 10,),
+              tododescrip("name", "Description Here")
+            ],
+          )),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => print("Touch"),
+        onPressed: () => null,
         child: const Icon(Icons.add),
       ),
     );
