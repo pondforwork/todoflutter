@@ -78,6 +78,10 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => print("Touch"),
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }
