@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'tododescrip.dart';
+import 'DatabaseHelper.dart'; // Import the DatabaseHelper class
 
 void main() {
   runApp(const MyApp());
@@ -11,13 +12,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.brown),
-          useMaterial3: true,
-        ),
-        home: const MyHomePage(title: 'To Do List'));
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.brown),
+        useMaterial3: true,
+      ),
+      home: const MyHomePage(title: 'To Do List'),
+    );
   }
 }
 
@@ -30,6 +32,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final DatabaseHelper _dbHelper = DatabaseHelper.instance;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,18 +44,43 @@ class _MyHomePageState extends State<MyHomePage> {
           style: const TextStyle(fontSize: 25, color: Colors.white),
         ),
       ),
-      body: const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              tododescrip("name",  "Description Here"),
-              SizedBox(height: 10,),
-              tododescrip("name", "Description Here")
-            ],
-          )),
+      body: FutureBuilder<List<Map<String, dynamic>>>(
+        future: _dbHelper.queryAll(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            // If there is data in the database, display it
+            List<Map<String, dynamic>> todos = snapshot.data!;
+            return ListView.builder(
+              itemCount: todos.length,
+              itemBuilder: (context, index) {
+                return tododescrip(
+                  todos[index]['name'],
+                  todos[index]['description'],
+                );
+              },
+            );
+          } else {
+            // If no data, display a loading indicator or an empty state
+            return const Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => null,
-        child: const Icon(Icons.add),
+        onPressed: () async {
+          // Dummy data for demonstration purposes
+          Map<String, dynamic> newRow = {
+            'name': 'New Task',
+            'description': 'Description for the new task',
+          };
+          // Insert the new task into the database
+          await _dbHelper.insert(newRow);
+          // Retrieve all data from the database
+          List<Map<String, dynamic>> allData = await _dbHelper.queryAll();
+          // Print the data as a log
+          print('Database Datas: $allData');
+          
+        },
+        child: const Icon(Icons.refresh),
       ),
     );
   }
