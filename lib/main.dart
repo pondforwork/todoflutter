@@ -112,6 +112,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   textField1.clear();
                   textField2.clear();
                   setState(() {});
+                  // ignore: use_build_context_synchronously
                   Navigator.of(context).pop(); // Close the dialog
                 }
               },
@@ -146,7 +147,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   padding: const EdgeInsets.all(6.0),
                   child: GestureDetector(
                     onDoubleTap: () {
-                      print("DoubleTap");
+                      
                     },
                     child: Column(
                       children: [
@@ -167,7 +168,7 @@ class _MyHomePageState extends State<MyHomePage> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
+        onPressed: () async {
           showMyDialog();
           // await _dbHelper.deleteAll();
           // setState(() {

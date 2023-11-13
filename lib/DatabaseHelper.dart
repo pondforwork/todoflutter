@@ -1,3 +1,4 @@
+// ignore: file_names
 import 'dart:io';
 
 import 'package:path/path.dart';
@@ -5,13 +6,13 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DatabaseHelper {
-  static final _databaseName = "todo.db";
-  static final _databaseVersion = 1;
+  static const _databaseName = 'todo.db';
+  static const _databaseVersion = 3;
 
-  static final table = 'todo';
-  static final columnId = 'id';
-  static final columnName = 'name';
-  static final columnDescription = 'description';
+  static const table = 'todo';
+  static const columnId = 'id';
+  static const columnName = 'name';
+  static const columnDescription = 'description';
 
   // make this a singleton class
   DatabaseHelper._privateConstructor();
@@ -30,10 +31,15 @@ class DatabaseHelper {
 
   // this opens the database (and creates it if it doesn't exist)
   _initDatabase() async {
-    Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    String path = join(documentsDirectory.path, _databaseName);
-    return await openDatabase(path,
-        version: _databaseVersion, onCreate: _onCreate);
+    try {
+      Directory documentsDirectory = await getApplicationDocumentsDirectory();
+      String path = join(documentsDirectory.path, _databaseName);
+      return await openDatabase(path,
+          version: _databaseVersion, onCreate: _onCreate);
+    } catch (e) {
+      print('Error initializing database: $e');
+      rethrow; // Rethrow the exception after logging it
+    }
   }
 
   // SQL code to create the database table
