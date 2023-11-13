@@ -81,16 +81,39 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () async {
                 String enteredText = textField1.text;
                 String enteredText2 = textField2.text;
-                Map<String, dynamic> newRow = {
-                  'name': enteredText,
-                  'description': enteredText2,
-                };
-                await _dbHelper.insert(newRow);
-                textField1.clear();
-                textField2.clear();
-                setState(() {});
 
-                Navigator.of(context).pop();
+                if (enteredText.length < 3 || enteredText2.length < 3) {
+                  // Show an alert if the entered text is less than 3 characters
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Alert'),
+                        content:
+                            const Text('Text must be at least 3 characters.'),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                } else {
+                  // Proceed with saving the data if the text is valid
+                  Map<String, dynamic> newRow = {
+                    'name': enteredText,
+                    'description': enteredText2,
+                  };
+                  await _dbHelper.insert(newRow);
+                  textField1.clear();
+                  textField2.clear();
+                  setState(() {});
+                  Navigator.of(context).pop(); // Close the dialog
+                }
               },
             ),
           ],
@@ -119,45 +142,19 @@ class _MyHomePageState extends State<MyHomePage> {
             return ListView.builder(
               itemCount: todos.length,
               itemBuilder: (context, index) {
-                return Dismissible(
-                  key: Key(todos[index]['id'].toString()),
-                  onDismissed: (direction) async {
-                    await _dbHelper.delete(todos[index]['id']);
-                    setState(() {});
-                  },
-                  background: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Colors.red,
-                      ),
-                      child: const Align(
-                        alignment: Alignment.centerRight,
-                        child: Padding(
-                          padding: EdgeInsets.only(right: 16.0),
-                          child: Icon(
-                            Icons.delete,
-                            color: Colors.white,
-                          ),
+                return Padding(
+                  padding: const EdgeInsets.all(6.0),
+                  child: GestureDetector(
+                    onDoubleTap: () {
+                      print("DoubleTap");
+                    },
+                    child: Column(
+                      children: [
+                        tododescrip(
+                          todos[index]['name'],
+                          todos[index]['description'],
                         ),
-                      ),
-                    ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(6.0),
-                    child: GestureDetector(
-                      onDoubleTap: () {
-                        print("DoubleTap");
-                      },
-                      child: Column(
-                        children: [
-                          tododescrip(
-                            todos[index]['name'],
-                            todos[index]['description'],
-                          ),
-                        ],
-                      ),
+                      ],
                     ),
                   ),
                 );
