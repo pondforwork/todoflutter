@@ -53,9 +53,14 @@ class _MyHomePageState extends State<MyHomePage> {
             return ListView.builder(
               itemCount: todos.length,
               itemBuilder: (context, index) {
-                return tododescrip(
-                  todos[index]['name'],
-                  todos[index]['description'],
+                return Padding(
+                  padding: const EdgeInsets.all(6.0),
+                  child: Column(
+                    children: [
+                      tododescrip(
+                          todos[index]['name'], todos[index]['description']),
+                    ],
+                  ),
                 );
               },
             );
@@ -69,16 +74,14 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: () async {
           // Dummy data for demonstration purposes
           Map<String, dynamic> newRow = {
-            'name': 'New Task',
+            'name': 'New Task 2',
             'description': 'Description for the new task',
           };
           // Insert the new task into the database
           await _dbHelper.insert(newRow);
           // Retrieve all data from the database
-          List<Map<String, dynamic>> allData = await _dbHelper.queryAll();
-          // Print the data as a log
-          print('Database Datas: $allData');
-          
+
+          setState(() {});
         },
         child: const Icon(Icons.refresh),
       ),
