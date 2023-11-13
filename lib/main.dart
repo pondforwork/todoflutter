@@ -131,13 +131,18 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(6.0),
-                    child: Column(
-                      children: [
-                        tododescrip(
-                          todos[index]['name'],
-                          todos[index]['description'],
-                        ),
-                      ],
+                    child: GestureDetector(
+                      onDoubleTap: () {
+                        print("DoubleTap");
+                      },
+                      child: Column(
+                        children: [
+                          tododescrip(
+                            todos[index]['name'],
+                            todos[index]['description'],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );
