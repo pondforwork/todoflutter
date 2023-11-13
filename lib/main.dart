@@ -33,7 +33,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final DatabaseHelper _dbHelper = DatabaseHelper.instance;
-  TextEditingController _textFieldController = TextEditingController();
+  TextEditingController textField1 = TextEditingController();
+  TextEditingController textField2 = TextEditingController();
 
   Future<void> showMyDialog() async {
     return showDialog<void>(
@@ -46,20 +47,39 @@ class _MyHomePageState extends State<MyHomePage> {
             child: ListBody(
               children: <Widget>[
                 TextField(
-                  controller: _textFieldController, // Assign the controller
+                    controller: textField1, // Assign the controller
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Enter a Topic',
+                    )),
+                const SizedBox(
+                  height: 10,
+                ),
+                TextField(
+                  controller: textField2, // Assign the controller
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
-                    hintText: 'Enter a Topic',
+                    hintText: 'Enter a Description',
                   ),
-                ),
+                )
               ],
             ),
           ),
           actions: <Widget>[
             TextButton(
               child: const Text('Save'),
-              onPressed: () {
-                String enteredText = _textFieldController.text;
+              onPressed: () async {
+                String enteredText = textField1.text;
+                String enteredText2 = textField2.text;
+                Map<String, dynamic> newRow = {
+                  'name': enteredText,
+                  'description': enteredText2,
+                };
+                await _dbHelper.insert(newRow);
+                textField1.clear();
+                textField2.clear();
+                setState(() {});
+
                 Navigator.of(context).pop();
               },
             ),
@@ -118,7 +138,6 @@ class _MyHomePageState extends State<MyHomePage> {
           // await _dbHelper.deleteAll();
           // Retrieve all data from the database
           showMyDialog();
-          setState(() {});
         },
         child: const Icon(Icons.refresh),
       ),
