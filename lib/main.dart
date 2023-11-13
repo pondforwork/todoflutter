@@ -33,8 +33,41 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final DatabaseHelper _dbHelper = DatabaseHelper.instance;
+  TextEditingController _textFieldController = TextEditingController();
 
-  
+  Future<void> showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Add New To Do'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                TextField(
+                  controller: _textFieldController, // Assign the controller
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Enter a Topic',
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Save'),
+              onPressed: () {
+                String enteredText = _textFieldController.text;
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +76,8 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.primary,
         title: Text(
           widget.title,
-          style: const TextStyle(fontSize: 25, color: Colors.white,fontWeight: FontWeight.bold),
+          style: const TextStyle(
+              fontSize: 25, color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
@@ -75,20 +109,19 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           // Dummy data for demonstration purposes
-          Map<String, dynamic> newRow = {
-            'name': 'New Task 2',
-            'description': 'Description for the new task',
-          };
+          // Map<String, dynamic> newRow = {
+          //   'name': 'New Task 2',
+          //   'description': 'Description for the new task',
+          // };
           // Insert the new task into the database
-          await _dbHelper.insert(newRow);
+          // await _dbHelper.insert(newRow);
           // await _dbHelper.deleteAll();
           // Retrieve all data from the database
-
+          showMyDialog();
           setState(() {});
         },
         child: const Icon(Icons.refresh),
       ),
     );
-    
   }
 }
