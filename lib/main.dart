@@ -34,6 +34,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final DatabaseHelper _dbHelper = DatabaseHelper.instance;
 
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,7 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.primary,
         title: Text(
           widget.title,
-          style: const TextStyle(fontSize: 25, color: Colors.white),
+          style: const TextStyle(fontSize: 25, color: Colors.white,fontWeight: FontWeight.bold),
         ),
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
@@ -79,6 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
           };
           // Insert the new task into the database
           await _dbHelper.insert(newRow);
+          // await _dbHelper.deleteAll();
           // Retrieve all data from the database
 
           setState(() {});
@@ -86,5 +89,6 @@ class _MyHomePageState extends State<MyHomePage> {
         child: const Icon(Icons.refresh),
       ),
     );
+    
   }
 }

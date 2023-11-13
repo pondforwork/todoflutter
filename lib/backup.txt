@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'tododescrip.dart';
+import 'DatabaseHelper.dart'; // Import the DatabaseHelper class
 
 void main() {
   runApp(const MyApp());
@@ -10,13 +12,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.brown),
-          useMaterial3: true,
-        ),
-        home: const MyHomePage(title: 'To Do List'));
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.brown),
+        useMaterial3: true,
+      ),
+      home: const MyHomePage(title: 'To Do List'),
+    );
   }
 }
 
@@ -29,6 +32,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final DatabaseHelper _dbHelper = DatabaseHelper.instance;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,48 +44,47 @@ class _MyHomePageState extends State<MyHomePage> {
           style: const TextStyle(fontSize: 25, color: Colors.white),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.green,
-                    borderRadius: BorderRadius.circular(20),
+      body: FutureBuilder<List<Map<String, dynamic>>>(
+        future: _dbHelper.queryAll(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            // If there is data in the database, display it
+            List<Map<String, dynamic>> todos = snapshot.data!;
+            return ListView.builder(
+              itemCount: todos.length,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.all(6.0),
+                  child: Column(
+                    children: [
+                      tododescrip(
+                          todos[index]['name'], todos[index]['description']),
+                    ],
                   ),
-                  height: 100,
-                  child: const Center(
-                    child: Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Todo1",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 24),
-                              textAlign: TextAlign.left,
-                            ),
-                            Text(
-                              "Description: Your description goes here. ",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 16),
-                            ),
-                          ],
-                        )),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
+                );
+              },
+            );
+          } else {
+            // If no data, display a loading indicator or an empty state
+            return const Center(child: CircularProgressIndicator());
+          }
+        },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => print("Touch"),
-        child: const Icon(Icons.add),
+        onPressed: () async {
+          // Dummy data for demonstration purposes
+          Map<String, dynamic> newRow = {
+            'name': 'New Task 2',
+            'description': 'Description for the new task',
+          };
+          // Insert the new task into the database
+          await _dbHelper.insert(newRow);
+          // await _dbHelper.deleteAll();
+          // Retrieve all data from the database
+
+          setState(() {});
+        },
+        child: const Icon(Icons.refresh),
       ),
     );
   }
