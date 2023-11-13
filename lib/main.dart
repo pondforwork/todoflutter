@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'tododescrip.dart';
-import 'DatabaseHelper.dart'; // Import the DatabaseHelper class
+import 'DatabaseHelper.dart';
 
 void main() {
   runApp(const MyApp());
@@ -47,16 +47,17 @@ class _MyHomePageState extends State<MyHomePage> {
             child: ListBody(
               children: <Widget>[
                 TextField(
-                    controller: textField1, // Assign the controller
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: 'Enter a Topic',
-                    )),
+                  controller: textField1,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Enter a Topic',
+                  ),
+                ),
                 const SizedBox(
                   height: 10,
                 ),
                 TextField(
-                  controller: textField2, // Assign the controller
+                  controller: textField2,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     hintText: 'Enter a Description',
@@ -109,13 +110,35 @@ class _MyHomePageState extends State<MyHomePage> {
             return ListView.builder(
               itemCount: todos.length,
               itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.all(6.0),
-                  child: Column(
-                    children: [
-                      tododescrip(
-                          todos[index]['name'], todos[index]['description']),
-                    ],
+                return Dismissible(
+                  key: Key(todos[index]['id'].toString()),
+                  onDismissed: (direction) async {
+                    await _dbHelper.delete(todos[index]['id']);
+                    setState(() {});
+                  },
+                  background: Container(
+                    color: Colors.red,
+                    child: const Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: EdgeInsets.only(right: 16.0),
+                        child: Icon(
+                          Icons.delete,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(6.0),
+                    child: Column(
+                      children: [
+                        tododescrip(
+                          todos[index]['name'],
+                          todos[index]['description'],
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },
@@ -127,19 +150,10 @@ class _MyHomePageState extends State<MyHomePage> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          // Dummy data for demonstration purposes
-          // Map<String, dynamic> newRow = {
-          //   'name': 'New Task 2',
-          //   'description': 'Description for the new task',
-          // };
-          // Insert the new task into the database
-          // await _dbHelper.insert(newRow);
-          // await _dbHelper.deleteAll();
-          // Retrieve all data from the database
+        onPressed: () {
           showMyDialog();
         },
-        child: const Icon(Icons.refresh),
+        child: const Icon(Icons.add),
       ),
     );
   }
