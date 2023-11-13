@@ -56,10 +56,12 @@ class DatabaseHelper {
     return await db.insert(table, row);
   }
 
-  // Get all todos from the database
-  Future<List<Map<String, dynamic>>> queryAll() async {
+  Future<List<Map<String, dynamic>>> queryAll(String columnName) async {
     Database db = await instance.database;
-    return await db.query(table);
+    return await db.query(
+      table,
+      orderBy: '$columnName DESC', // DESC for descending order
+    );
   }
 
   // Update a todo in the database

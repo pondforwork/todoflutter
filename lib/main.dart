@@ -102,7 +102,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
-        future: _dbHelper.queryAll(),
+        future: _dbHelper.queryAll('id'),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             // If there is data in the database, display it
@@ -113,8 +113,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 return Dismissible(
                   key: Key(todos[index]['id'].toString()),
                   onDismissed: (direction) async {
-                    await _dbHelper.delete(todos[index]['id']);
-                    setState(() {});
+                    if (direction == DismissDirection.endToStart) {
+                      await _dbHelper.delete(todos[index]['id']);
+                      setState(() {});
+                    } else {
+                     
+                    }
                   },
                   background: Container(
                     color: Colors.red,
