@@ -9,7 +9,6 @@ class DatabaseHelper {
   static final _databaseVersion = 1;
 
   static final table = 'todo';
-
   static final columnId = 'id';
   static final columnName = 'name';
   static final columnDescription = 'description';

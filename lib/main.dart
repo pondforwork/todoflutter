@@ -113,12 +113,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 return Dismissible(
                   key: Key(todos[index]['id'].toString()),
                   onDismissed: (direction) async {
-                    if (direction == DismissDirection.endToStart) {
-                      await _dbHelper.delete(todos[index]['id']);
-                      setState(() {});
-                    } else {
-                     
-                    }
+                    print("id");
+                    print(todos[index]['id']);
+                    await _dbHelper.delete(todos[index]['id']);
+                    setState(() {});
                   },
                   background: Container(
                     color: Colors.red,
@@ -161,6 +159,10 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showMyDialog();
+          // await _dbHelper.deleteAll();
+          // setState(() {
+
+          // });
         },
         child: const Icon(Icons.add),
       ),
