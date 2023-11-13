@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'To Do List',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.brown),
@@ -68,6 +68,15 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           actions: <Widget>[
             TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                textField1.clear();
+                textField2.clear();
+                // Perform any actions you want when the user presses Cancel
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
               child: const Text('Save'),
               onPressed: () async {
                 String enteredText = textField1.text;
@@ -113,20 +122,24 @@ class _MyHomePageState extends State<MyHomePage> {
                 return Dismissible(
                   key: Key(todos[index]['id'].toString()),
                   onDismissed: (direction) async {
-                    print("id");
-                    print(todos[index]['id']);
                     await _dbHelper.delete(todos[index]['id']);
                     setState(() {});
                   },
-                  background: Container(
-                    color: Colors.red,
-                    child: const Align(
-                      alignment: Alignment.centerRight,
-                      child: Padding(
-                        padding: EdgeInsets.only(right: 16.0),
-                        child: Icon(
-                          Icons.delete,
-                          color: Colors.white,
+                  background: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.red,
+                      ),
+                      child: const Align(
+                        alignment: Alignment.centerRight,
+                        child: Padding(
+                          padding: EdgeInsets.only(right: 16.0),
+                          child: Icon(
+                            Icons.delete,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
