@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'tododescrip.dart';
 import 'DatabaseHelper.dart';
@@ -123,17 +124,19 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  showDeleteDialog(BuildContext context) {
+  showDeleteDialog(BuildContext context, int index) {
     // set up the button
     Widget okButton = TextButton(
       child: Text("OK"),
       onPressed: () {
+        _dbHelper.deleteByIndex(index);
+        setState(() {});
         Navigator.pop(context);
       },
     );
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Text("Delete This"),
+      title: Text("Delete This To Do?"),
       content: Text("This is my message."),
       actions: [
         okButton,
@@ -168,12 +171,20 @@ class _MyHomePageState extends State<MyHomePage> {
             return ListView.builder(
               itemCount: todos.length,
               itemBuilder: (context, index) {
+                final LongPressGestureRecognizer longPressGestureRecognizer =
+                    LongPressGestureRecognizer()
+                      ..onLongPress = () {
+                        showDeleteDialog(context, index);
+                        print("Index");
+                        print(index);
+                      };
                 return Padding(
                   padding: const EdgeInsets.all(6.0),
                   child: GestureDetector(
                     onDoubleTap: () {
-                      showDeleteDialog(context);
+                      showDeleteDialog(context, index);
                     },
+                    onLongPress: longPressGestureRecognizer.onLongPress,
                     child: Column(
                       children: [
                         tododescrip(

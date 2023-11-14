@@ -69,6 +69,36 @@ class DatabaseHelper {
     );
   }
 
+  Future<List<int>> getAllIds() async {
+    Database db = await instance.database;
+    List<Map<String, dynamic>> result = await db.query(
+      table,
+      columns: [columnId],
+      orderBy: '$columnId DESC',
+    );
+
+    List<int> ids = result.map<int>((row) => row[columnId] as int).toList();
+    return ids;
+  }
+
+  // Delete a todo from the database by index
+  Future<int> deleteByIndex(int index) async {
+    Database db = await instance.database;
+
+    // Retrieve the ID by index
+    List<int> ids = await getAllIds();
+    if (index < 0 || index >= ids.length) {
+      // Index out of bounds
+      return -1;
+    }
+
+    int idToDelete = ids[index];
+
+    // Delete the row by ID
+    return await db
+        .delete(table, where: '$columnId = ?', whereArgs: [idToDelete]);
+  }
+
   // Update a todo in the database
   Future<int> update(Map<String, dynamic> row) async {
     Database db = await instance.database;
