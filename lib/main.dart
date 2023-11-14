@@ -123,6 +123,31 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  showDeleteDialog(BuildContext context) {
+    // set up the button
+    Widget okButton = TextButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Delete This"),
+      content: Text("This is my message."),
+      actions: [
+        okButton,
+      ],
+    );
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -147,7 +172,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   padding: const EdgeInsets.all(6.0),
                   child: GestureDetector(
                     onDoubleTap: () {
-                      
+                      showDeleteDialog(context);
                     },
                     child: Column(
                       children: [
