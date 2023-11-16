@@ -134,11 +134,19 @@ class _MyHomePageState extends State<MyHomePage> {
         Navigator.pop(context);
       },
     );
+    // set up the Cancel button
+    Widget cancelButton = TextButton(
+      child: Text("Cancel"),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
       title: Text("Delete This To Do?"),
-      content: Text("This is my message."),
+      content: Text("Are You Sure?"),
       actions: [
+        cancelButton,
         okButton,
       ],
     );
