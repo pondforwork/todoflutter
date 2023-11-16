@@ -206,8 +206,14 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             );
           } else {
-            // If no data, display a loading indicator or an empty state
-            return const Center(child: CircularProgressIndicator());
+           // If no data, display a message
+      print("No to-do items found in the database.");
+      return const Center(
+        child: Text(
+          "No to-do items found.",
+          style: TextStyle(fontSize: 18, color: Colors.grey),
+        ),
+      );
           }
         },
       ),
