@@ -124,6 +124,96 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  Future<void> showUpdateDialog(int index) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Edit To Do'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                TextField(
+                  // controller: textField1,
+                  controller: TextEditingController(text: "Default Topic"),
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Enter a Topic',
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                TextField(
+                  controller: TextEditingController(text: "Test Pre Insert"),
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Enter a Description',
+                  ),
+                )
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                print("index");
+                print(index);
+                textField1.clear();
+                textField2.clear();
+                // Perform any actions you want when the user presses Cancel
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Save'),
+              onPressed: () async {
+                String enteredText = textField1.text;
+                String enteredText2 = textField2.text;
+
+                if (enteredText.length < 3 || enteredText2.length < 3) {
+                  // Show an alert if the entered text is less than 3 characters
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Alert'),
+                        content:
+                            const Text('Text must be at least 3 characters.'),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                } else {
+                  // Proceed with saving the data if the text is valid
+                  Map<String, dynamic> newRow = {
+                    'name': enteredText,
+                    'description': enteredText2,
+                  };
+                  await _dbHelper.insert(newRow);
+                  textField1.clear();
+                  textField2.clear();
+                  setState(() {});
+                  // ignore: use_build_context_synchronously
+                  Navigator.of(context).pop(); // Close the dialog
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   showDeleteDialog(BuildContext context, int index) {
     // set up the button
     Widget okButton = TextButton(
@@ -190,7 +280,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   padding: const EdgeInsets.all(6.0),
                   child: GestureDetector(
                     onDoubleTap: () {
-                      showDeleteDialog(context, index);
+                      showUpdateDialog(index);
                     },
                     onLongPress: longPressGestureRecognizer.onLongPress,
                     child: Column(
@@ -206,14 +296,14 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             );
           } else {
-           // If no data, display a message
-      print("No to-do items found in the database.");
-      return const Center(
-        child: Text(
-          "No to-do items found.",
-          style: TextStyle(fontSize: 18, color: Colors.grey),
-        ),
-      );
+            // If no data, display a message
+            print("No to-do items found in the database.");
+            return const Center(
+              child: Text(
+                "No to-do items found.",
+                style: TextStyle(fontSize: 18, color: Colors.grey),
+              ),
+            );
           }
         },
       ),
